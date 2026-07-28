@@ -2,6 +2,7 @@
 
 import { AuthForm } from "@/components/auth-form";
 import { CategorySelector } from "@/components/category-selector";
+import { DailyTaskList } from "@/components/daily-task-list";
 import { useAuth } from "@/context/auth-context";
 
 export default function Home() {
@@ -51,6 +52,8 @@ export default function Home() {
         </header>
 
         <CategorySelector />
+
+        <DailyTaskList selectedCategories={userProfile?.selectedCategories ?? []} />
       </div>
     </main>
   );
