@@ -40,3 +40,13 @@ export interface UserTask {
   assignedDate: string;
   completedAt?: string;
 }
+export interface CustomTask {
+  id: string;
+  userId: string;
+  title: string;
+  description: string;
+  categoryId: CategoryId;
+  points: number;
+  completed: boolean;
+  createdAt: string;
+}

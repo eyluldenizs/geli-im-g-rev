@@ -3,6 +3,7 @@
 import { AuthForm } from "@/components/auth-form";
 import { CategorySelector } from "@/components/category-selector";
 import { DailyTaskList } from "@/components/daily-task-list";
+import { CustomTaskForm } from "@/components/custom-task-form";
 import { useAuth } from "@/context/auth-context";
 import { useState } from "react";
 
@@ -80,7 +81,7 @@ isEditingCategories ? (
     >
       Kategorileri değiştir
     </button>
-
+    <CustomTaskForm />
     <DailyTaskList selectedCategories={userProfile.selectedCategories} />
   </div>
 )}
