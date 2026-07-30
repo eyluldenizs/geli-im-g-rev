@@ -4,9 +4,12 @@ import { AuthForm } from "@/components/auth-form";
 import { CategorySelector } from "@/components/category-selector";
 import { DailyTaskList } from "@/components/daily-task-list";
 import { useAuth } from "@/context/auth-context";
+import { useState } from "react";
+
 
 export default function Home() {
   const { currentUser, loading, logout, userProfile } = useAuth();
+  const [isEditingCategories, setIsEditingCategories] = useState(false);
 
   if (loading) {
     return (
@@ -51,9 +54,36 @@ export default function Home() {
           </button>
         </header>
 
-        <CategorySelector />
+     {!userProfile?.selectedCategories ||
+userProfile.selectedCategories.length === 0 ||
+isEditingCategories ? (
+  <div className="space-y-4">
+    {userProfile?.selectedCategories &&
+      userProfile.selectedCategories.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setIsEditingCategories(false)}
+          className="rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
+        >
+          Görevlere dön
+        </button>
+      )}
 
-        <DailyTaskList selectedCategories={userProfile?.selectedCategories ?? []} />
+    <CategorySelector onSaved={() => setIsEditingCategories(false)} />
+  </div>
+) : (
+  <div className="space-y-4">
+    <button
+      type="button"
+      onClick={() => setIsEditingCategories(true)}
+      className="rounded-2xl bg-white px-4 py-3 font-semibold text-slate-950 shadow transition hover:bg-slate-50"
+    >
+      Kategorileri değiştir
+    </button>
+
+    <DailyTaskList selectedCategories={userProfile.selectedCategories} />
+  </div>
+)}
       </div>
     </main>
   );

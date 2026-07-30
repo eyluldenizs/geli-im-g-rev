@@ -9,7 +9,11 @@ import { categories } from "@/data/tasks";
 import { db } from "@/lib/firebase";
 import type { CategoryId } from "@/types/app";
 
-export function CategorySelector() {
+interface CategorySelectorProps {
+  onSaved?: () => void;
+}
+
+export function CategorySelector({ onSaved }: CategorySelectorProps) {
   const { currentUser, userProfile, refreshUserProfile } = useAuth();
 
   const [selectedCategories, setSelectedCategories] = useState<CategoryId[]>(
@@ -30,6 +34,7 @@ export function CategorySelector() {
     },
     onSuccess: async () => {
       await refreshUserProfile();
+      onSaved?.();
     },
   });
 
