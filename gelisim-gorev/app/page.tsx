@@ -6,6 +6,7 @@ import { DailyTaskList } from "@/components/daily-task-list";
 import { CustomTaskForm } from "@/components/custom-task-form";
 import { useAuth } from "@/context/auth-context";
 import { useState } from "react";
+import { Leaderboard } from "@/components/leaderboard";
 
 
 export default function Home() {
@@ -83,6 +84,7 @@ isEditingCategories ? (
     </button>
     <CustomTaskForm />
     <DailyTaskList selectedCategories={userProfile.selectedCategories} />
+    <Leaderboard />
   </div>
 )}
       </div>
