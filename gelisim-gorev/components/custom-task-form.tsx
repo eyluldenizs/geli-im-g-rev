@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient} from "@tanstack/react-query";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { FormEvent, useState } from "react";
 
@@ -11,6 +11,7 @@ import type { CategoryId } from "@/types/app";
 
 export function CustomTaskForm() {
   const { currentUser, userProfile } = useAuth();
+  const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -35,10 +36,13 @@ export function CustomTaskForm() {
         createdAt: serverTimestamp(),
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       setTitle("");
       setDescription("");
       setPoints(10);
+       await queryClient.invalidateQueries({
+    queryKey: ["customTasks", currentUser?.uid],
+  });
     },
   });
 
