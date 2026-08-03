@@ -34,137 +34,145 @@ export default function Home() {
     );
   }
 
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 px-4 py-8">
-      <div className="mx-auto max-w-5xl space-y-6">
-        <header className="rounded-[2rem] bg-white/80 p-6 shadow-xl shadow-pink-100 backdrop-blur">
-  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-pink-400">
-        Günlük Gelişim
-      </p>
+ return (
+  <main className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 px-4 py-6">
+    <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-6xl gap-6 rounded-[2rem] bg-white/80 p-4 shadow-2xl shadow-purple-100 backdrop-blur lg:grid-cols-[240px_1fr]">
+      <aside className="rounded-[1.5rem] bg-purple-950 p-5 text-white">
+        <div className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-purple-200">
+            GrowMe
+          </p>
+          <h2 className="mt-2 text-xl font-bold">Gelişim Paneli</h2>
+        </div>
 
-      <h1 className="mt-2 text-3xl font-bold text-slate-950">
-         Merhaba, bugün kendin için güzel bir yer açalım 🌸
-      </h1>
+        <nav className="space-y-2">
+          <button
+            type="button"
+            onClick={() => setActiveSection("tasks")}
+            className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
+              activeSection === "tasks"
+                ? "bg-white text-purple-950"
+                : "text-purple-100 hover:bg-white/10"
+            }`}
+          >
+            Görevlerim
+          </button>
 
-      <p className="mt-2 text-sm text-slate-600">
-      Görevlerini seç, tamamla ve gelişimini profilinde takip et.
-</p>
+          <button
+            type="button"
+            onClick={() => setActiveSection("custom-task")}
+            className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
+              activeSection === "custom-task"
+                ? "bg-white text-purple-950"
+                : "text-purple-100 hover:bg-white/10"
+            }`}
+          >
+            Kendi Görevim
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSection("badges")}
+            className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
+              activeSection === "badges"
+                ? "bg-white text-purple-950"
+                : "text-purple-100 hover:bg-white/10"
+            }`}
+          >
+            Başarılarım
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveSection("leaderboard")}
+            className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
+              activeSection === "leaderboard"
+                ? "bg-white text-purple-950"
+                : "text-purple-100 hover:bg-white/10"
+            }`}
+          >
+            Leaderboard
+          </button>
+        </nav>
+
+        <div className="mt-8 space-y-2">
+          <Link
+            href="/profile"
+            className="block rounded-2xl bg-purple-100 px-4 py-3 text-sm font-semibold text-purple-900 transition hover:bg-purple-200"
+          >
+            Profilim
+          </Link>
+
+          <button
+            type="button"
+            onClick={logout}
+            className="w-full rounded-2xl bg-white/10 px-4 py-3 text-left text-sm font-semibold text-purple-100 transition hover:bg-white/20"
+          >
+            Çıkış yap
+          </button>
+        </div>
+      </aside>
+
+      <section className="space-y-6 p-2 lg:p-4">
+        <header className="rounded-[1.5rem] bg-gradient-to-r from-purple-100 to-pink-100 p-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-purple-500">
+            Ana sayfa
+          </p>
+
+          <h1 className="mt-3 text-3xl font-bold text-purple-950">
+            Merhaba, bugün kendin için minik ama değerli bir adım atalım ✨
+          </h1>
+
+          <p className="mt-2 max-w-2xl text-sm text-purple-700">
+            Görevlerini seç, tamamladıkça puan kazan ve gelişim yolculuğunu
+            profilinden takip et.
+          </p>
+        </header>
+
+        {!userProfile?.selectedCategories ||
+        userProfile.selectedCategories.length === 0 ||
+        isEditingCategories ? (
+          <div className="space-y-4">
+            {userProfile?.selectedCategories &&
+              userProfile.selectedCategories.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setIsEditingCategories(false)}
+                  className="rounded-2xl bg-purple-600 px-4 py-3 font-semibold text-white transition hover:bg-purple-700"
+                >
+                  Görevlere dön
+                </button>
+              )}
+
+            <CategorySelector onSaved={() => setIsEditingCategories(false)} />
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsEditingCategories(true)}
+                className="rounded-2xl bg-purple-600 px-4 py-3 font-semibold text-white transition hover:bg-purple-700"
+              >
+                Kategorileri değiştir
+              </button>
+            </div>
+
+            {activeSection === "tasks" && (
+              <DailyTaskList selectedCategories={userProfile.selectedCategories} />
+            )}
+
+            {activeSection === "custom-task" && <CustomTaskForm />}
+
+            {activeSection === "badges" && <Badges />}
+
+            {activeSection === "leaderboard" && <Leaderboard />}
+          </div>
+        )}
+      </section>
     </div>
-
-    <div className="flex gap-3">
-      <Link
-        href="/profile"
-        className="rounded-2xl bg-pink-100 px-4 py-3 font-semibold text-pink-700 transition hover:bg-pink-200"
-      >
-        Profilim
-      </Link>
-
-      <button
-        type="button"
-        onClick={logout}
-        className="rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
-      >
-        Çıkış yap
-      </button>
-    </div>
-  </div>
-</header>
-
-     {!userProfile?.selectedCategories ||
-userProfile.selectedCategories.length === 0 ||
-isEditingCategories ? (
-  <div className="space-y-4">
-    {userProfile?.selectedCategories &&
-      userProfile.selectedCategories.length > 0 && (
-        <button
-          type="button"
-          onClick={() => setIsEditingCategories(false)}
-          className="rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
-        >
-          Görevlere dön
-        </button>
-      )}
-
-    <CategorySelector onSaved={() => setIsEditingCategories(false)} />
-  </div>
-) : (
- <div className="space-y-6">
-  
-
-  <nav className="flex flex-wrap gap-3 rounded-3xl bg-white/80 p-3 shadow-xl shadow-pink-100 backdrop-blur">
-    <button
-      type="button"
-      onClick={() => setActiveSection("tasks")}
-      className={`rounded-2xl px-4 py-3 font-semibold transition ${
-        activeSection === "tasks"
-          ? "bg-purple-500 text-white shadow-lg shadow-purple-100"
-         : "bg-pink-50 text-slate-700 hover:bg-pink-100"
-      }`}
-    >
-      Görevlerim
-    </button>
-
-    <button
-      type="button"
-      onClick={() => setActiveSection("custom-task")}
-      className={`rounded-2xl px-4 py-3 font-semibold transition ${
-        activeSection === "custom-task"
-          ? "bg-indigo-600 text-white"
-          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-      }`}
-    >
-      Kendi Görevim
-    </button>
-
-    <button
-      type="button"
-      onClick={() => setActiveSection("badges")}
-      className={`rounded-2xl px-4 py-3 font-semibold transition ${
-        activeSection === "badges"
-          ? "bg-indigo-600 text-white"
-          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-      }`}
-    >
-      Başarılarım
-    </button>
-
-    <button
-      type="button"
-      onClick={() => setActiveSection("leaderboard")}
-      className={`rounded-2xl px-4 py-3 font-semibold transition ${
-        activeSection === "leaderboard"
-          ? "bg-indigo-600 text-white"
-          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-      }`}
-    >
-      Leaderboard
-    </button>
-
-    <button
-      type="button"
-      onClick={() => setIsEditingCategories(true)}
-      className="ml-auto rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
-    >
-      Kategorileri değiştir
-    </button>
-  </nav>
-
-  {activeSection === "tasks" && (
-    <DailyTaskList selectedCategories={userProfile.selectedCategories} />
-  )}
-
-  {activeSection === "custom-task" && <CustomTaskForm />}
-
-  {activeSection === "badges" && <Badges />}
-
-  {activeSection === "leaderboard" && <Leaderboard />}
-</div>
-)}
-      </div>
-    </main>
-  );
+  </main>
+);
 }
 
 // Kullanıcı giriş yapmamışsa AuthForm gösteriliyor.
