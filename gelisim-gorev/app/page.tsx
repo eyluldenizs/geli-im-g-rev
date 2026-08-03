@@ -7,11 +7,15 @@ import { CustomTaskForm } from "@/components/custom-task-form";
 import { useAuth } from "@/context/auth-context";
 import { useState } from "react";
 import { Leaderboard } from "@/components/leaderboard";
+import { Badges } from "@/components/badges";
 
 
 export default function Home() {
   const { currentUser, loading, logout, userProfile } = useAuth();
   const [isEditingCategories, setIsEditingCategories] = useState(false);
+  const [activeSection, setActiveSection] = useState<
+  "tasks" | "custom-task" | "badges" | "leaderboard"
+>("tasks");
 
   if (loading) {
     return (
@@ -74,18 +78,98 @@ isEditingCategories ? (
     <CategorySelector onSaved={() => setIsEditingCategories(false)} />
   </div>
 ) : (
-  <div className="space-y-4">
+ <div className="space-y-6">
+  <div className="grid gap-4 md:grid-cols-3">
+    <div className="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200">
+      <p className="text-sm text-slate-500">Toplam puan</p>
+      <p className="mt-2 text-3xl font-bold text-slate-950">
+        {userProfile.totalPoints}
+      </p>
+    </div>
+
+    <div className="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200">
+      <p className="text-sm text-slate-500">Seçili kategori</p>
+      <p className="mt-2 text-3xl font-bold text-slate-950">
+        {userProfile.selectedCategories.length}
+      </p>
+    </div>
+
+    <div className="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200">
+      <p className="text-sm text-slate-500">Rozet</p>
+      <p className="mt-2 text-3xl font-bold text-slate-950">
+        {userProfile.badges.length}
+      </p>
+    </div>
+  </div>
+
+  <nav className="flex flex-wrap gap-3 rounded-3xl bg-white p-3 shadow-xl shadow-slate-200">
+    <button
+      type="button"
+      onClick={() => setActiveSection("tasks")}
+      className={`rounded-2xl px-4 py-3 font-semibold transition ${
+        activeSection === "tasks"
+          ? "bg-indigo-600 text-white"
+          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+      }`}
+    >
+      Görevlerim
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setActiveSection("custom-task")}
+      className={`rounded-2xl px-4 py-3 font-semibold transition ${
+        activeSection === "custom-task"
+          ? "bg-indigo-600 text-white"
+          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+      }`}
+    >
+      Kendi Görevim
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setActiveSection("badges")}
+      className={`rounded-2xl px-4 py-3 font-semibold transition ${
+        activeSection === "badges"
+          ? "bg-indigo-600 text-white"
+          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+      }`}
+    >
+      Başarılarım
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setActiveSection("leaderboard")}
+      className={`rounded-2xl px-4 py-3 font-semibold transition ${
+        activeSection === "leaderboard"
+          ? "bg-indigo-600 text-white"
+          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+      }`}
+    >
+      Leaderboard
+    </button>
+
     <button
       type="button"
       onClick={() => setIsEditingCategories(true)}
-      className="rounded-2xl bg-white px-4 py-3 font-semibold text-slate-950 shadow transition hover:bg-slate-50"
+      className="ml-auto rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
     >
       Kategorileri değiştir
     </button>
-    <CustomTaskForm />
+  </nav>
+
+  {activeSection === "tasks" && (
     <DailyTaskList selectedCategories={userProfile.selectedCategories} />
-    <Leaderboard />
-  </div>
+  )}
+
+  {activeSection === "custom-task" && <CustomTaskForm />}
+
+  {activeSection === "badges" && <Badges />}
+
+  {activeSection === "leaderboard" && <Leaderboard />}
+</div>
 )}
       </div>
     </main>
