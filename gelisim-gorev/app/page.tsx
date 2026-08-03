@@ -8,6 +8,7 @@ import { useAuth } from "@/context/auth-context";
 import { useState } from "react";
 import { Leaderboard } from "@/components/leaderboard";
 import { Badges } from "@/components/badges";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -34,31 +35,42 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 px-4 py-8">
+    <main className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 px-4 py-8">
       <div className="mx-auto max-w-5xl space-y-6">
-        <header className="flex flex-col gap-4 rounded-3xl bg-slate-950 p-6 text-white shadow-xl shadow-slate-300 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.25em] text-indigo-300">
-              Günlük Gelişim
-            </p>
+        <header className="rounded-[2rem] bg-white/80 p-6 shadow-xl shadow-pink-100 backdrop-blur">
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-pink-400">
+        Günlük Gelişim
+      </p>
 
-            <h1 className="mt-2 text-3xl font-bold">
-              Merhaba, {userProfile?.email}
-            </h1>
+      <h1 className="mt-2 text-3xl font-bold text-slate-950">
+         Merhaba, bugün kendin için güzel bir yer açalım 🌸
+      </h1>
 
-            <p className="mt-2 text-sm text-slate-300">
-              Toplam puanın: {userProfile?.totalPoints ?? 0}
-            </p>
-          </div>
+      <p className="mt-2 text-sm text-slate-600">
+      Görevlerini seç, tamamla ve gelişimini profilinde takip et.
+</p>
+    </div>
 
-          <button
-            type="button"
-            onClick={logout}
-            className="rounded-2xl bg-white px-4 py-3 font-semibold text-slate-950 transition hover:bg-slate-200"
-          >
-            Çıkış yap
-          </button>
-        </header>
+    <div className="flex gap-3">
+      <Link
+        href="/profile"
+        className="rounded-2xl bg-pink-100 px-4 py-3 font-semibold text-pink-700 transition hover:bg-pink-200"
+      >
+        Profilim
+      </Link>
+
+      <button
+        type="button"
+        onClick={logout}
+        className="rounded-2xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
+      >
+        Çıkış yap
+      </button>
+    </div>
+  </div>
+</header>
 
      {!userProfile?.selectedCategories ||
 userProfile.selectedCategories.length === 0 ||
@@ -79,37 +91,16 @@ isEditingCategories ? (
   </div>
 ) : (
  <div className="space-y-6">
-  <div className="grid gap-4 md:grid-cols-3">
-    <div className="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200">
-      <p className="text-sm text-slate-500">Toplam puan</p>
-      <p className="mt-2 text-3xl font-bold text-slate-950">
-        {userProfile.totalPoints}
-      </p>
-    </div>
+  
 
-    <div className="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200">
-      <p className="text-sm text-slate-500">Seçili kategori</p>
-      <p className="mt-2 text-3xl font-bold text-slate-950">
-        {userProfile.selectedCategories.length}
-      </p>
-    </div>
-
-    <div className="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200">
-      <p className="text-sm text-slate-500">Rozet</p>
-      <p className="mt-2 text-3xl font-bold text-slate-950">
-        {userProfile.badges.length}
-      </p>
-    </div>
-  </div>
-
-  <nav className="flex flex-wrap gap-3 rounded-3xl bg-white p-3 shadow-xl shadow-slate-200">
+  <nav className="flex flex-wrap gap-3 rounded-3xl bg-white/80 p-3 shadow-xl shadow-pink-100 backdrop-blur">
     <button
       type="button"
       onClick={() => setActiveSection("tasks")}
       className={`rounded-2xl px-4 py-3 font-semibold transition ${
         activeSection === "tasks"
-          ? "bg-indigo-600 text-white"
-          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+          ? "bg-purple-500 text-white shadow-lg shadow-purple-100"
+         : "bg-pink-50 text-slate-700 hover:bg-pink-100"
       }`}
     >
       Görevlerim
