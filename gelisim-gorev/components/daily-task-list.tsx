@@ -1,13 +1,24 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { useMutation, useQuery} from "@tanstack/react-query";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  increment,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
 import { dailyTasks } from "@/data/tasks";
 import { db } from "@/lib/firebase";
-import type { CategoryId } from "@/types/app";
+import type { CategoryId, DailyTask} from "@/types/app";
 
 interface DailyTaskListProps {
   selectedCategories: CategoryId[];
@@ -15,11 +26,38 @@ interface DailyTaskListProps {
 
 export function DailyTaskList({ selectedCategories }: DailyTaskListProps) {
   const { currentUser, refreshUserProfile } = useAuth();
+  const customTasksQuery = useQuery({
+  queryKey: ["customTasks", currentUser?.uid],
+  enabled: Boolean(currentUser),
+  queryFn: async () => {
+    if (!currentUser) {
+      return [];
+    }
+
+    const customTasksRef = collection(db, "customTasks");
+    const customTasksQuerySnapshot = await getDocs(
+      query(customTasksRef, where("userId", "==", currentUser.uid)),
+    );
+
+    return customTasksQuerySnapshot.docs.map((document) => {
+      const data = document.data();
+
+      return {
+        id: document.id,
+        title: String(data.title ?? ""),
+        description: String(data.description ?? ""),
+        categoryId: data.categoryId as CategoryId,
+        difficulty: "easy",
+        points: Number(data.points ?? 10),
+      } satisfies DailyTask;
+    });
+  },
+});
   const [completedTaskIds, setCompletedTaskIds] = useState<string[]>([]);
   const today = new Date().toISOString().slice(0, 10);
 
   const completeTaskMutation = useMutation({
-    mutationFn: async (task: (typeof dailyTasks)[number]) => {
+    mutationFn: async (task: DailyTask) => {
       if (!currentUser) {
         throw new Error("Kullanıcı bulunamadı.");
       }
@@ -57,10 +95,11 @@ return task;
     },
   });
 
-  const filteredTasks = dailyTasks.filter((task) =>
-    selectedCategories.includes(task.categoryId),
-  );
+  const allTasks = [...dailyTasks, ...(customTasksQuery.data ?? [])];
 
+const filteredTasks = allTasks.filter((task) =>
+  selectedCategories.includes(task.categoryId),
+);
   if (selectedCategories.length === 0) {
     return (
       <section className="rounded-3xl bg-white p-6 shadow-xl shadow-slate-200">
@@ -88,7 +127,17 @@ return task;
           Bu görevleri tamamladıkça puan kazanacaksın.
         </p>
       </div>
+{customTasksQuery.isLoading && (
+  <p className="mb-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+    Özel görevler yükleniyor...
+  </p>
+)}
 
+{customTasksQuery.isError && (
+  <p className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+    Özel görevler yüklenemedi.
+  </p>
+)}
       {completeTaskMutation.isError && (
         <p className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
           Görev tamamlanamadı. Lütfen tekrar dene.
