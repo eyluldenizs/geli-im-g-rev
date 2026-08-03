@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { doc, increment, updateDoc } from "firebase/firestore";
+import { doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
@@ -16,6 +16,7 @@ interface DailyTaskListProps {
 export function DailyTaskList({ selectedCategories }: DailyTaskListProps) {
   const { currentUser, refreshUserProfile } = useAuth();
   const [completedTaskIds, setCompletedTaskIds] = useState<string[]>([]);
+  const today = new Date().toISOString().slice(0, 10);
 
   const completeTaskMutation = useMutation({
     mutationFn: async (task: (typeof dailyTasks)[number]) => {
@@ -24,12 +25,31 @@ export function DailyTaskList({ selectedCategories }: DailyTaskListProps) {
       }
 
       const userRef = doc(db, "users", currentUser.uid);
+      const userTaskId = `${currentUser.uid}_${task.id}_${today}`;
+      const userTaskRef = doc(db, "userTasks", userTaskId);
 
-      await updateDoc(userRef, {
-        totalPoints: increment(task.points),
-      });
+      const userTaskSnapshot = await getDoc(userTaskRef);
 
-      return task;
+      if (userTaskSnapshot.exists()) {
+          throw new Error("Bu görev bugün zaten tamamlandı.");
+      }
+
+await setDoc(userTaskRef, {
+  userId: currentUser.uid,
+  taskId: task.id,
+  title: task.title,
+  categoryId: task.categoryId,
+  points: task.points,
+  completed: true,
+  assignedDate: today,
+  completedAt: serverTimestamp(),
+});
+
+await updateDoc(userRef, {
+  totalPoints: increment(task.points),
+});
+
+return task;
     },
     onSuccess: async (task) => {
       setCompletedTaskIds((prev) => [...prev, task.id]);

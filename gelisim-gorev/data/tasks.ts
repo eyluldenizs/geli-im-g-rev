@@ -29,6 +29,7 @@ export const categories: Category[] = [
 ];
 
 export const dailyTasks: DailyTask[] = [
+  // Ders
   {
     id: "ders-1",
     title: "30 dakika tekrar yap",
@@ -46,6 +47,40 @@ export const dailyTasks: DailyTask[] = [
     points: 10,
   },
   {
+    id: "ders-3",
+    title: "1 konu özeti çıkar",
+    description: "Zorlandığın bir konuyu kendi cümlelerinle kısa özetle.",
+    categoryId: "ders",
+    difficulty: "medium",
+    points: 20,
+  },
+  {
+    id: "ders-4",
+    title: "15 dakika kitap oku",
+    description: "Dersine veya kişisel gelişimine katkı sağlayacak bir metin oku.",
+    categoryId: "ders",
+    difficulty: "easy",
+    points: 10,
+  },
+  {
+    id: "ders-5",
+    title: "Yanlışlarını analiz et",
+    description: "Daha önce yanlış yaptığın 5 soruyu tekrar incele.",
+    categoryId: "ders",
+    difficulty: "hard",
+    points: 30,
+  },
+  {
+    id: "ders-6",
+    title: "Yarın için çalışma planı hazırla",
+    description: "Yarın hangi konulara çalışacağını kısa bir liste halinde yaz.",
+    categoryId: "ders",
+    difficulty: "easy",
+    points: 10,
+  },
+
+  // Spor
+  {
     id: "spor-1",
     title: "20 dakika yürüyüş yap",
     description: "Tempo fark etmez, amaç bugün hareket etmiş olmak.",
@@ -61,6 +96,40 @@ export const dailyTasks: DailyTask[] = [
     difficulty: "easy",
     points: 10,
   },
+  {
+    id: "spor-3",
+    title: "10 squat yap",
+    description: "Kendi seviyene göre kontrollü şekilde 10 squat tamamla.",
+    categoryId: "spor",
+    difficulty: "easy",
+    points: 10,
+  },
+  {
+    id: "spor-4",
+    title: "1 litre su içmeyi takip et",
+    description: "Gün içinde en az 1 litre su içtiğinden emin ol.",
+    categoryId: "spor",
+    difficulty: "easy",
+    points: 10,
+  },
+  {
+    id: "spor-5",
+    title: "20 dakika egzersiz yap",
+    description: "Evde veya dışarıda kısa bir egzersiz rutini tamamla.",
+    categoryId: "spor",
+    difficulty: "medium",
+    points: 20,
+  },
+  {
+    id: "spor-6",
+    title: "Bugünkü hareketini not al",
+    description: "Bugün ne kadar yürüdüğünü veya hangi egzersizi yaptığını yaz.",
+    categoryId: "spor",
+    difficulty: "easy",
+    points: 10,
+  },
+
+  // Oyun
   {
     id: "oyun-1",
     title: "1 maç analiz et",
@@ -78,6 +147,40 @@ export const dailyTasks: DailyTask[] = [
     points: 10,
   },
   {
+    id: "oyun-3",
+    title: "Yeni bir strateji dene",
+    description: "Oynadığın oyunda daha önce denemediğin bir stratejiyi test et.",
+    categoryId: "oyun",
+    difficulty: "medium",
+    points: 20,
+  },
+  {
+    id: "oyun-4",
+    title: "Takım iletişimini geliştir",
+    description: "Takım oyununda daha net ve sakin iletişim kurmaya odaklan.",
+    categoryId: "oyun",
+    difficulty: "medium",
+    points: 20,
+  },
+  {
+    id: "oyun-5",
+    title: "Oyun sonrası kısa değerlendirme yaz",
+    description: "Bugün oyunda iyi yaptığın ve geliştirebileceğin bir şeyi yaz.",
+    categoryId: "oyun",
+    difficulty: "easy",
+    points: 10,
+  },
+  {
+    id: "oyun-6",
+    title: "30 dakika pratik yap",
+    description: "Refleks, aim, mekanik veya strateji üzerine kısa pratik yap.",
+    categoryId: "oyun",
+    difficulty: "hard",
+    points: 30,
+  },
+
+  // İş
+  {
     id: "is-1",
     title: "Günün 3 önceliğini yaz",
     description: "Bugün bitirmen gereken en önemli 3 işi listele.",
@@ -89,6 +192,38 @@ export const dailyTasks: DailyTask[] = [
     id: "is-2",
     title: "25 dakika odak çalışması yap",
     description: "Telefonu uzaklaştırıp tek bir işe 25 dakika odaklan.",
+    categoryId: "is",
+    difficulty: "medium",
+    points: 20,
+  },
+  {
+    id: "is-3",
+    title: "Bir işi küçük parçalara böl",
+    description: "Büyük görünen bir işi 3 küçük adıma ayır.",
+    categoryId: "is",
+    difficulty: "easy",
+    points: 10,
+  },
+  {
+    id: "is-4",
+    title: "Gelen kutunu düzenle",
+    description: "Mail, mesaj veya yapılacaklar listende küçük bir temizlik yap.",
+    categoryId: "is",
+    difficulty: "easy",
+    points: 10,
+  },
+  {
+    id: "is-5",
+    title: "Bugünkü ilerlemeni not al",
+    description: "Bugün yaptığın işi ve nerede kaldığını kısa şekilde yaz.",
+    categoryId: "is",
+    difficulty: "medium",
+    points: 20,
+  },
+  {
+    id: "is-6",
+    title: "Yeni bir şey öğren",
+    description: "İşinle ilgili kısa bir yazı, video veya doküman incele.",
     categoryId: "is",
     difficulty: "medium",
     points: 20,
