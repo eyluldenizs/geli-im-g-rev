@@ -26,13 +26,56 @@ export default function Home() {
     );
   }
 
-  if (!currentUser) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10">
+ if (!currentUser) {
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 px-4 py-10">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-5xl items-center gap-8 lg:grid-cols-[1fr_420px]">
+        <section className="rounded-[2rem] bg-white/70 p-8 shadow-2xl shadow-purple-100 backdrop-blur">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-purple-500">
+            Günlük Gelişim
+          </p>
+
+          <h1 className="mt-5 text-4xl font-bold leading-tight text-purple-950 md:text-5xl">
+            Tek bir küçük görev,
+            <br />
+            gününü güzelleştirebilir.
+          </h1>
+
+          <p className="mt-5 max-w-xl text-base leading-7 text-purple-700">
+            Kategorini seç, sana uygun günlük görevleri tamamla ve gelişimini
+            tatlı bir puan sistemiyle takip et. Burada amaç mükemmel olmak
+            değil; kendine düzenli küçük alanlar açmak.
+          </p>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl bg-purple-100 p-4">
+              <p className="text-2xl">🌸</p>
+              <p className="mt-2 text-sm font-semibold text-purple-900">
+                Samimi takip
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-pink-100 p-4">
+              <p className="text-2xl">✨</p>
+              <p className="mt-2 text-sm font-semibold text-purple-900">
+                Günlük görevler
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-fuchsia-100 p-4">
+              <p className="text-2xl">🏆</p>
+              <p className="mt-2 text-sm font-semibold text-purple-900">
+                Puan ve rozet
+              </p>
+            </div>
+          </div>
+        </section>
+
         <AuthForm />
-      </main>
-    );
-  }
+      </div>
+    </main>
+  );
+}
 
  return (
   <main className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 px-4 py-6">

@@ -39,9 +39,9 @@ export function AuthForm() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/90 p-8 shadow-2xl shadow-slate-200">
+<div className="w-full rounded-[2rem] border border-purple-100 bg-white/90 p-8 shadow-2xl shadow-purple-100 backdrop-blur">
       <div className="mb-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-500">
+        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-purple-500">
           Günlük Gelişim
         </p>
 
@@ -73,7 +73,7 @@ export function AuthForm() {
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-slate-900 outline-none transition focus:border-purple-400 focus:ring-purple-100"
             placeholder="En az 6 karakter"
             required
             minLength={6}
@@ -95,7 +95,7 @@ export function AuthForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-2xl bg-indigo-600 px-4 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+          className="w-full rounded-2xl bg-purple-600 px-4 py-3 font-semibold text-white transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:bg-purple-300"
         >
           {isSubmitting
             ? "İşlem yapılıyor..."
@@ -112,7 +112,7 @@ export function AuthForm() {
           setErrorMessage("");
           setSuccessMessage("");
         }}
-        className="mt-5 w-full text-sm font-medium text-indigo-600 hover:text-indigo-700"
+        className="mt-5 w-full text-sm font-medium text-purple-600 hover:text-purple-700"
       >
         {isRegisterMode
           ? "Zaten hesabın var mı? Giriş yap"
