@@ -4,9 +4,14 @@ import Link from "next/link";
 
 import { Badges } from "@/components/badges";
 import { useAuth } from "@/context/auth-context";
+import { getUnlockedBadges } from "@/lib/badges";
 
 export default function ProfilePage() {
   const { currentUser, loading, logout, userProfile } = useAuth();
+  const unlockedBadgeCount = getUnlockedBadges(
+    userProfile?.totalPoints ?? 0,
+    userProfile?.badges ?? [],
+  ).length;
 
   if (loading) {
     return (
@@ -91,7 +96,7 @@ export default function ProfilePage() {
           <div className="rounded-3xl bg-white/80 p-5 shadow-xl shadow-pink-100">
             <p className="text-sm text-slate-500">Rozet</p>
             <p className="mt-2 text-3xl font-bold text-indigo-500">
-              {userProfile?.badges.length ?? 0}
+              {unlockedBadgeCount}
             </p>
           </div>
         </section>
@@ -137,7 +142,7 @@ export default function ProfilePage() {
     <div className="rounded-2xl border border-rose-100 bg-rose-50/70 p-5">
       <p className="text-sm text-slate-500">Başarı sayısı</p>
       <p className="mt-2 font-semibold text-slate-950">
-        {userProfile?.badges.length ?? 0} rozet
+        {unlockedBadgeCount} rozet
       </p>
     </div>
   </div>

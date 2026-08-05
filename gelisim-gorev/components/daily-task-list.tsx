@@ -1,7 +1,8 @@
 "use client";
 
-import { useMutation, useQuery} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -17,8 +18,9 @@ import { useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
 import { dailyTasks } from "@/data/tasks";
+import { getUnlockedBadges } from "@/lib/badges";
 import { db } from "@/lib/firebase";
-import type { CategoryId, DailyTask} from "@/types/app";
+import type { CategoryId, DailyTask } from "@/types/app";
 
 interface DailyTaskListProps {
   selectedCategories: CategoryId[];
@@ -27,32 +29,32 @@ interface DailyTaskListProps {
 export function DailyTaskList({ selectedCategories }: DailyTaskListProps) {
   const { currentUser, refreshUserProfile } = useAuth();
   const customTasksQuery = useQuery({
-  queryKey: ["customTasks", currentUser?.uid],
-  enabled: Boolean(currentUser),
-  queryFn: async () => {
-    if (!currentUser) {
-      return [];
-    }
+    queryKey: ["customTasks", currentUser?.uid],
+    enabled: Boolean(currentUser),
+    queryFn: async () => {
+      if (!currentUser) {
+        return [];
+      }
 
-    const customTasksRef = collection(db, "customTasks");
-    const customTasksQuerySnapshot = await getDocs(
-      query(customTasksRef, where("userId", "==", currentUser.uid)),
-    );
+      const customTasksRef = collection(db, "customTasks");
+      const customTasksQuerySnapshot = await getDocs(
+        query(customTasksRef, where("userId", "==", currentUser.uid)),
+      );
 
-    return customTasksQuerySnapshot.docs.map((document) => {
-      const data = document.data();
+      return customTasksQuerySnapshot.docs.map((document) => {
+        const data = document.data();
 
-      return {
-        id: document.id,
-        title: String(data.title ?? ""),
-        description: String(data.description ?? ""),
-        categoryId: data.categoryId as CategoryId,
-        difficulty: "easy",
-        points: Number(data.points ?? 10),
-      } satisfies DailyTask;
-    });
-  },
-});
+        return {
+          id: document.id,
+          title: String(data.title ?? ""),
+          description: String(data.description ?? ""),
+          categoryId: data.categoryId as CategoryId,
+          difficulty: "easy",
+          points: Number(data.points ?? 10),
+        } satisfies DailyTask;
+      });
+    },
+  });
   const [completedTaskIds, setCompletedTaskIds] = useState<string[]>([]);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -69,25 +71,37 @@ export function DailyTaskList({ selectedCategories }: DailyTaskListProps) {
       const userTaskSnapshot = await getDoc(userTaskRef);
 
       if (userTaskSnapshot.exists()) {
-          throw new Error("Bu görev bugün zaten tamamlandı.");
+        throw new Error("Bu görev bugün zaten tamamlandı.");
       }
 
-await setDoc(userTaskRef, {
-  userId: currentUser.uid,
-  taskId: task.id,
-  title: task.title,
-  categoryId: task.categoryId,
-  points: task.points,
-  completed: true,
-  assignedDate: today,
-  completedAt: serverTimestamp(),
-});
+      await setDoc(userTaskRef, {
+        userId: currentUser.uid,
+        taskId: task.id,
+        title: task.title,
+        categoryId: task.categoryId,
+        points: task.points,
+        completed: true,
+        assignedDate: today,
+        completedAt: serverTimestamp(),
+      });
 
-await updateDoc(userRef, {
-  totalPoints: increment(task.points),
-});
+      const userSnapshot = await getDoc(userRef);
+      const currentTotalPoints = Number(userSnapshot.data()?.totalPoints ?? 0);
+      const storedBadges = Array.isArray(userSnapshot.data()?.badges)
+        ? (userSnapshot.data()?.badges as string[])
+        : [];
+      const nextTotalPoints = currentTotalPoints + task.points;
+      const unlockedBadgeIds = getUnlockedBadges(
+        nextTotalPoints,
+        storedBadges,
+      ).map((badge) => badge.id);
 
-return task;
+      await updateDoc(userRef, {
+        totalPoints: increment(task.points),
+        badges: arrayUnion(...unlockedBadgeIds),
+      });
+
+      return task;
     },
     onSuccess: async (task) => {
       setCompletedTaskIds((prev) => [...prev, task.id]);
@@ -97,9 +111,9 @@ return task;
 
   const allTasks = [...dailyTasks, ...(customTasksQuery.data ?? [])];
 
-const filteredTasks = allTasks.filter((task) =>
-  selectedCategories.includes(task.categoryId),
-);
+  const filteredTasks = allTasks.filter((task) =>
+    selectedCategories.includes(task.categoryId),
+  );
   if (selectedCategories.length === 0) {
     return (
       <section className="rounded-3xl bg-white p-6 shadow-xl shadow-slate-200">
@@ -127,17 +141,17 @@ const filteredTasks = allTasks.filter((task) =>
           Bu görevleri tamamladıkça puan kazanacaksın.
         </p>
       </div>
-{customTasksQuery.isLoading && (
-  <p className="mb-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-    Özel görevler yükleniyor...
-  </p>
-)}
+      {customTasksQuery.isLoading && (
+        <p className="mb-4 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          Özel görevler yükleniyor...
+        </p>
+      )}
 
-{customTasksQuery.isError && (
-  <p className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
-    Özel görevler yüklenemedi.
-  </p>
-)}
+      {customTasksQuery.isError && (
+        <p className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+          Özel görevler yüklenemedi.
+        </p>
+      )}
       {completeTaskMutation.isError && (
         <p className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
           Görev tamamlanamadı. Lütfen tekrar dene.
@@ -159,9 +173,7 @@ const filteredTasks = allTasks.filter((task) =>
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-semibold text-slate-950">
-                    {task.title}
-                  </h3>
+                  <h3 className="font-semibold text-slate-950">{task.title}</h3>
 
                   <p className="mt-2 text-sm text-slate-600">
                     {task.description}
